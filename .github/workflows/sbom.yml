@@ -50,16 +50,23 @@ jobs:
       uses: actions/attest-build-provenance@v1
       with:          
         subject-path: ${{ env.cdxBASENAME }}.xml
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.21.4'
+    # - name: Set up Go
+    #   uses: actions/setup-go@v5
+    #   with:
+    #     go-version: '1.21.4'
     - name: sbomqs spdx score
       run: |
+        go version
         go install github.com/interlynk-io/sbomqs@latest
-        $GOPATH/bin/sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        echo "$GOPATH"
+        ls -ls $GOPATH/bin
+        echo "$GOPATH/bin" >> $GITHUB_PATH
+
+    - name: sbomqs spdx score
+      run: |
+        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
         cat spdx-${{ env.cdxBASENAME }}-sbomqs.txt
-        $GOPATH/bin/sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}
+        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
