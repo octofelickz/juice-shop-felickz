@@ -59,13 +59,14 @@ jobs:
         echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
     - name: sbomqs spdx score
       run: |
-        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} > spdx-${{ env.cdxBASENAME }}-sbomqs.txt
-        cat spdx-${{ env.cdxBASENAME }}-sbomqs.txt
-        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}  >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} > spdx-${{ env.BASENAME }}-sbomqs.txt
+        cat spdx-${{ env.BASENAME }}-sbomqs.txt
+        echo "" >> spdx-${{ env.BASENAME }}-sbomqs.txt
+        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}  >> spdx-${{ env.BASENAME }}-sbomqs.txt
     - name: Generate artifact attestation - CDX XML
       uses: actions/attest-build-provenance@v1
       with:          
-        subject-path: $spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        subject-path: $spdx-${{ env.BASENAME }}-sbomqs.txt
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
