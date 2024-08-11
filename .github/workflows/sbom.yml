@@ -50,6 +50,10 @@ jobs:
       uses: actions/attest-build-provenance@v1
       with:          
         subject-path: ${{ env.cdxBASENAME }}.xml
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.21.4'
     - name: sbomqs spdx score
       run: |
         go install github.com/interlynk-io/sbomqs@latest
