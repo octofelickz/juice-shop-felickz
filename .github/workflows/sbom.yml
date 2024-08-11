@@ -58,9 +58,9 @@ jobs:
       run: |
         go version
         go install github.com/interlynk-io/sbomqs@latest
-        echo "$GOPATH"
-        ls -ls $GOPATH/bin
-        echo "$GOPATH/bin" >> $GITHUB_PATH
+        go env GOPATH
+        ls -ls "$(go env GOPATH)/bin"
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
     - name: sbomqs spdx score
       run: |
