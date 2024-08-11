@@ -74,6 +74,6 @@ jobs:
               spdx-${{ steps.gensbom.outputs.fileName }}
               ${{ env.cdxBASENAME }}.xml
               ${{ env.cdxBASENAME }}.json
-              spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+              spdx-${{ env.BASENAME }}-sbomqs.txt
 
         
