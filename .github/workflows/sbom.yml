@@ -53,8 +53,9 @@ jobs:
     - name: sbomqs spdx score
       run: |
         go install github.com/interlynk-io/sbomqs@latest
-        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
-        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}
+        ./sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        cat spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        ./sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
