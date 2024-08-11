@@ -36,6 +36,7 @@ jobs:
       run: |
           FILE_NAME="${{ steps.gensbom.outputs.fileName }}"
           BASENAME=$(basename "$FILE_NAME" .json)
+          echo "BASENAME=$BASENAME" >> $GITHUB_ENV
           cdxBASENAME="cdx-${BASENAME}"
           echo "cdxBASENAME=$cdxBASENAME" >> $GITHUB_ENV
           ./cyclonedx convert --input-file /tmp/spdx.json  --output-file "${cdxBASENAME}.json" --input-format spdxjson --output-format json
@@ -49,6 +50,11 @@ jobs:
       uses: actions/attest-build-provenance@v1
       with:          
         subject-path: ${{ env.cdxBASENAME }}.xml
+    - name: sbomqs spdx score
+      run: |
+        go install github.com/interlynk-io/sbomqs@latest
+        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
@@ -56,4 +62,5 @@ jobs:
               spdx-${{ steps.gensbom.outputs.fileName }}
               ${{ env.cdxBASENAME }}.xml
               ${{ env.cdxBASENAME }}.json
+
         
