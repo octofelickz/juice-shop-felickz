@@ -50,20 +50,20 @@ jobs:
       uses: actions/attest-build-provenance@v1
       with:          
         subject-path: ${{ env.cdxBASENAME }}.xml
-    - name: sbomqs spdx score
+    - name: sbom quality score install (interlynk-io/sbomqs)
       run: |
         # go version
         # go env GOPATH
         # ls -ls "$(go env GOPATH)/bin"
         go install github.com/interlynk-io/sbomqs@latest
         echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-    - name: sbomqs spdx score
+    - name: sbomqs spdx quality score
       run: |
         sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} > spdx-${{ env.BASENAME }}-sbomqs.txt
         cat spdx-${{ env.BASENAME }}-sbomqs.txt
         echo "" >> spdx-${{ env.BASENAME }}-sbomqs.txt
         sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}  >> spdx-${{ env.BASENAME }}-sbomqs.txt
-    - name: Generate artifact attestation - CDX XML
+    - name: Generate artifact attestation - SBOMQ
       uses: actions/attest-build-provenance@v1
       with:          
         subject-path: spdx-${{ env.BASENAME }}-sbomqs.txt
