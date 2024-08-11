@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    # Use CLI tooling
+    # - name: Generate SBOM via CLI
+    #   run: | 
+    #     gh ext install advanced-security/gh-sbom
+    #     gh sbom > gh-spdx.json
     # Calls the REST API: https://docs.github.com/en/rest/dependency-graph/sboms?apiVersion=2022-11-28
     - uses: advanced-security/generate-sbom-action@v1
       id: gensbom
