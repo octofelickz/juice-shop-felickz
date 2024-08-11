@@ -50,23 +50,22 @@ jobs:
       uses: actions/attest-build-provenance@v1
       with:          
         subject-path: ${{ env.cdxBASENAME }}.xml
-    # - name: Set up Go
-    #   uses: actions/setup-go@v5
-    #   with:
-    #     go-version: '1.21.4'
     - name: sbomqs spdx score
       run: |
-        go version
+        # go version
+        # go env GOPATH
+        # ls -ls "$(go env GOPATH)/bin"
         go install github.com/interlynk-io/sbomqs@latest
-        go env GOPATH
-        ls -ls "$(go env GOPATH)/bin"
         echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-
     - name: sbomqs spdx score
       run: |
-        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+        sbomqs score spdx-${{ steps.gensbom.outputs.fileName }} > spdx-${{ env.cdxBASENAME }}-sbomqs.txt
         cat spdx-${{ env.cdxBASENAME }}-sbomqs.txt
-        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}
+        sbomqs share spdx-${{ steps.gensbom.outputs.fileName }}  >> spdx-${{ env.cdxBASENAME }}-sbomqs.txt
+    - name: Generate artifact attestation - CDX XML
+      uses: actions/attest-build-provenance@v1
+      with:          
+        subject-path: $spdx-${{ env.cdxBASENAME }}-sbomqs.txt
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
@@ -74,5 +73,6 @@ jobs:
               spdx-${{ steps.gensbom.outputs.fileName }}
               ${{ env.cdxBASENAME }}.xml
               ${{ env.cdxBASENAME }}.json
+              spdx-${{ env.cdxBASENAME }}-sbomqs.txt
 
         
