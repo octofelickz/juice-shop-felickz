@@ -68,10 +68,8 @@ jobs:
     - name: Copy Attestation Manfiest to output
       run: |
         echo "Attestation Bundle Path: ${{ steps.genprovenance.outputs.bundle-path }}" 
-        cat ${{ steps.genprovenance.outputs.bundle-path }}
         cat "$GITHUB_STEP_SUMMARY"
-        cp "$GITHUB_STEP_SUMMARY" AttestationSummary.html
-        cat AttestationSummary.html
+        echo "${{join(steps.genprovenance.outputs.*, '\n')}}"
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
@@ -81,6 +79,6 @@ jobs:
               ${{ env.cdxBASENAME }}.json
               spdx-${{ env.BASENAME }}-sbomqs.txt
               ${{ steps.genprovenance.outputs.bundle-path }}
-              # AttestationSummary.html
+              $GITHUB_STEP_SUMMARY
 
         
