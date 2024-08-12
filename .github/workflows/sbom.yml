@@ -65,13 +65,19 @@ jobs:
           ${{ env.cdxBASENAME }}.xml
           ${{ env.cdxBASENAME }}.json
           spdx-${{ env.BASENAME }}-sbomqs.txt
+    - uses: austenstone/job-summary-to-pdf@main
+      id: job-summary
+      with:
+          create-pdf: false
     - name: Copy Attestation Manfiest to output
       run: |
         echo "Attestation Bundle Path: ${{ steps.genprovenance.outputs.bundle-path }}" 
         cp ${{ steps.genprovenance.outputs.bundle-path }} attestation.jsonl
-        cat "$GITHUB_STEP_SUMMARY"
-        echo "${{join(steps.genprovenance.outputs.*, '\n')}}"
-        find ${{runner.temp}}
+        #cat "$GITHUB_STEP_SUMMARY"
+        #echo "${{join(steps.genprovenance.outputs.*, '\n')}}"
+        #find ${{runner.temp}}
+        echo "${{ steps.job-summary.outputs.job-summary }}" > attestation.html
+        cat attestation.html
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
@@ -81,6 +87,6 @@ jobs:
               ${{ env.cdxBASENAME }}.json
               spdx-${{ env.BASENAME }}-sbomqs.txt
               attestation.jsonl
-              $GITHUB_STEP_SUMMARY
+              attestation.html
 
         
