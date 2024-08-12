@@ -71,8 +71,7 @@ jobs:
         cp ${{ steps.genprovenance.outputs.bundle-path }} attestation.jsonl
         cat "$GITHUB_STEP_SUMMARY"
         echo "${{join(steps.genprovenance.outputs.*, '\n')}}"
-        find /_temp/_runner_file_commands/
-        find ${{runner.temp}}/_runner_file_commands/
+        find ${{runner.temp}}
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
