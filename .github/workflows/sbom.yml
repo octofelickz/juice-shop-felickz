@@ -76,8 +76,8 @@ jobs:
         #cat "$GITHUB_STEP_SUMMARY"
         #echo "${{join(steps.genprovenance.outputs.*, '\n')}}"
         #find ${{runner.temp}}
-        echo "${{ steps.job-summary.outputs.job-summary }}" > attestation.html
-        cat attestation.html
+        echo "${{ steps.job-summary.outputs.job-summary }}" 
+        echo "${{ steps.job-summary.outputs.html-file }}"
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
@@ -87,6 +87,6 @@ jobs:
               ${{ env.cdxBASENAME }}.json
               spdx-${{ env.BASENAME }}-sbomqs.txt
               attestation.jsonl
-              attestation.html
+              ${{ steps.job-summary.outputs.html-file }}
 
         
