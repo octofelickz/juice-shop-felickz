@@ -69,8 +69,9 @@ jobs:
       run: |
         echo "Attestation Bundle Path: ${{ steps.genprovenance.outputs.bundle-path }}" 
         cat ${{ steps.genprovenance.outputs.bundle-path }}
-        # cp ${{env.GITHUB_STEP_SUMMARY}} AttestationSummary.html
-        # cat AttestationSummary.html
+        cat "$GITHUB_STEP_SUMMARY"
+        cp "$GITHUB_STEP_SUMMARY" AttestationSummary.html
+        cat AttestationSummary.html
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
