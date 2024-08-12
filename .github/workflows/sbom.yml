@@ -69,15 +69,12 @@ jobs:
       id: job-summary
       with:
           create-pdf: false
+          create-pdf-artifact: false
     - name: Copy Attestation Manfiest to output
       run: |
         echo "Attestation Bundle Path: ${{ steps.genprovenance.outputs.bundle-path }}" 
         cp ${{ steps.genprovenance.outputs.bundle-path }} attestation.jsonl
-        #cat "$GITHUB_STEP_SUMMARY"
-        #echo "${{join(steps.genprovenance.outputs.*, '\n')}}"
-        #find ${{runner.temp}}
-        echo "${{ steps.job-summary.outputs.job-summary }}" 
-        echo "${{ steps.job-summary.outputs.html-file }}"
+        cp "${{ steps.job-summary.outputs.html-file }}" attestation.html
     - uses: actions/upload-artifact@v4
       with:
         name: sboms
@@ -87,6 +84,6 @@ jobs:
               ${{ env.cdxBASENAME }}.json
               spdx-${{ env.BASENAME }}-sbomqs.txt
               attestation.jsonl
-              ${{ steps.job-summary.outputs.html-file }}
+              attestation.html
 
         
