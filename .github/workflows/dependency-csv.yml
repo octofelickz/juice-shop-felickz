@@ -9,7 +9,7 @@ on:
         type: number
 jobs:
   gen_csv:
-    name: "Dependency Graph to CSV [depth: ${{ github.event.inputs.my_value }}]"
+    name: "Dependency Graph to CSV [depth: ${{ github.event.inputs.depth }}]"
     runs-on: ubuntu-latest
     steps:
       - name: 'Generate Dependencies Action'
