@@ -1,0 +1,20 @@
+name: 'Dependency Generation CSV'
+on: 
+  workflow_dispatch:
+    inputs:
+      depth:
+        description: "The depth of transitive dependencies to report on.  Defaults to 0,  which will not include transitives (i.e. it will only list packages from manifests found in the repo).  Higher numbers will include transitive dependencies by including the manifests from the included packages' repos as well, but can significantly increase scan time."
+        required: true
+        default: 0
+        type: number
+jobs:
+  gen_csv:
+    name: "Dependency Graph to CSV [depth: ${{ github.event.inputs.my_value }}]"
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Generate Dependencies Action'
+        uses: thedave42/generate-dependencies-csv-action@84e22e5810d308a8ce71793e253f6a12378c8a00
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          depth: 0
+          repo-names: ${{ github.event.repository.name }}
