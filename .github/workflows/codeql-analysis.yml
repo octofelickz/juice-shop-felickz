@@ -30,6 +30,7 @@ jobs:
         config: |
           paths-ignore:
             - 'data/static/codefixes'
+            - "**/test/**"
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
     - name: Perform CodeQL Analysis
