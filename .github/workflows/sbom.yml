@@ -10,7 +10,7 @@ permissions:
   attestations: write
 jobs:
   gen-sbom:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04	# fixes https://github.com/austenstone/job-summary/issues/46 - ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     # Use CLI tooling
