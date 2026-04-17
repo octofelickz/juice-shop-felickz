@@ -1,4 +1,5 @@
-# Uses the dependency-graph/sboms REST API to aquire an SPDX SBOM, attest with build provenance, and upload as an artifact.
+# Uses the dependency-graph/sboms REST API to acquire an SPDX SBOM, attest with build provenance, and upload as an artifact.
+# Also generates a CSAF VEX document from Dependabot alerts.
 name: Generate SBOM
 on:
   push:
@@ -86,4 +87,43 @@ jobs:
               attestation.jsonl
               attestation.html
 
-        
+  # -----------------------------------------------------------------------
+  # Generate a CSAF VEX document from GitHub Dependabot alerts.
+  #
+  # The Dependabot alerts API is NOT accessible via the default GITHUB_TOKEN.
+  # You must create a PAT (classic with `security_events` scope, or
+  # fine-grained with `vulnerability_alerts:read`) and store it as the
+  # repository secret  DEPENDABOT_ALERTS_TOKEN.
+  # -----------------------------------------------------------------------
+  gen-vex:
+    runs-on: ubuntu-22.04
+    needs: gen-sbom
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Fetch Dependabot alerts and generate CSAF VEX
+      env:
+        GH_TOKEN: ${{ secrets.DEPENDABOT_ALERTS_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_SERVER_URL: ${{ github.server_url }}
+        GITHUB_SHA: ${{ github.sha }}
+        VEX_OUTPUT_FILE: csaf-vex.json
+      run: python3 scripts/generate-csaf-vex.py
+
+    - name: Display VEX summary
+      if: success()
+      run: |
+        {
+          echo "### CSAF VEX Summary"
+          VULN_COUNT=$(jq '.vulnerabilities | length' csaf-vex.json)
+          echo "Total vulnerabilities documented: **${VULN_COUNT}**"
+          echo ""
+          echo '```json'
+          jq '.document.tracking' csaf-vex.json
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: csaf-vex
+        path: csaf-vex.json
